@@ -17,11 +17,30 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(UserType),
       args: { id: { type: GraphQLInt } },
       resolve(parent, args) {
-        return userData;
+        if (args.id) {
+          return userData
+            .filter((user) => user.id === args.id)
+            .map((user) => ({
+              id: user.id,
+              firstName: user.first_name,
+              lastName: user.last_name,
+              email: user.email,
+              password: user.password,
+            }));
+        } else {
+          return userData.map((user) => ({
+            id: user.id,
+            firstName: user.first_name,
+            lastName: user.last_name,
+            email: user.email,
+            password: user.password,
+          }));
+        }
       },
     },
   },
 });
+
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
@@ -29,7 +48,7 @@ const Mutation = new GraphQLObjectType({
       type: UserType,
       args: {
         firstName: { type: GraphQLString },
-        lastNameName: { type: GraphQLString },
+        lastName: { type: GraphQLString },
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
