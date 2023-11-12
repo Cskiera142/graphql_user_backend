@@ -5,10 +5,11 @@ const {
   GraphQLInt,
   GraphQLString,
   GraphQLList,
+  GraphQLNonNull, // Import GraphQLNonNull for non-nullable types
 } = graphql;
-const userData = require("../MOCK_DATA.json");
 
 const UserType = require("./TypeDefs/UserType");
+const userData = require("../MOCK_DATA.json");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -43,6 +44,21 @@ const Mutation = new GraphQLObjectType({
           password: args.password,
         });
         return args;
+      },
+    },
+    deleteUser: {
+      type: UserType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) }, // ID is non-nullable
+      },
+      resolve(parent, args) {
+        const userIndex = userData.findIndex((user) => user.id === args.id);
+        if (userIndex !== -1) {
+          const deletedUser = userData.splice(userIndex, 1)[0];
+          return deletedUser;
+        } else {
+          throw new Error("User not found");
+        }
       },
     },
   },
