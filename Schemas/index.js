@@ -17,25 +17,7 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(UserType),
       args: { id: { type: GraphQLInt } },
       resolve(parent, args) {
-        if (args.id) {
-          return userData
-            .filter((user) => user.id === args.id)
-            .map((user) => ({
-              id: user.id,
-              firstName: user.first_name,
-              lastName: user.last_name,
-              email: user.email,
-              password: user.password,
-            }));
-        } else {
-          return userData.map((user) => ({
-            id: user.id,
-            firstName: user.first_name,
-            lastName: user.last_name,
-            email: user.email,
-            password: user.password,
-          }));
-        }
+        return userData;
       },
     },
   },
@@ -64,11 +46,6 @@ const Mutation = new GraphQLObjectType({
       },
     },
   },
-});
-
-const schema = new graphql.GraphQLSchema({
-  query: RootQuery,
-  mutation: Mutation,
 });
 
 module.exports = new GraphQLSchema({ query: RootQuery, mutation: Mutation });
